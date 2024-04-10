@@ -1,22 +1,54 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [name, setName] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const getData = async () => {
+    const response = await fetch("http://localhost:5000/getName");
+    const data = await response.json();
+    setName(data);
+  };
+  // eslint-disable-next-line
+  const editData = async (dataname) => {
+    const response = await fetch(`http://localhost:5000/editName`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: dataname }),
+    });
+    const data = await response.json();
+    if(data.name){
+      setName(data.name)
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div>
+          <h3>name : {name}</h3>
+          <form
+            onSubmit={handleSubmit((data) => {
+              editData(data.name);
+            })}
+          >
+            {errors.name && (
+              <p style={{ color: "red" }}>This field is required</p>
+            )}
+            <label>EditName</label>
+            <input {...register("name", { required: true })} />
+            <input type="submit" />
+          </form>
+        </div>
       </header>
     </div>
   );
