@@ -10,13 +10,13 @@ function App() {
     formState: { errors },
   } = useForm();
   const getData = async () => {
-    const response = await fetch("http://localhost:5000/getName");
+    const response = await fetch("https://hiddenjem-backend.onrender.com/getName");
     const data = await response.json();
     setName(data);
   };
   // eslint-disable-next-line
   const editData = async (dataname) => {
-    const response = await fetch(`http://localhost:5000/editName`, {
+    const response = await fetch(`https://hiddenjem-backend.onrender.com/editName`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
